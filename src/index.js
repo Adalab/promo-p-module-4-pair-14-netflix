@@ -29,3 +29,11 @@ server.get('/movies', (req, res) => {
   };
   res.json(response);
 });
+
+//static server
+
+const staticServerPathAdmin = './src/public-react';
+server.use(express.static(staticServerPathAdmin));
+
+//const staticServerPathAdmin2 = './src/public-movies-images';
+//server.use(express.static(staticServerPathAdmin2));

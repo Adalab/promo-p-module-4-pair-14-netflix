@@ -3,12 +3,12 @@
     "id": "1",
     "title": "Gambito de dama",
     "gender": "Drama",
-    "image": "//beta.adalab.es/curso-intensivo-fullstack-recursos/apis/netflix-v1/images/gambito-de-dama.jpg"
+    "image": "//localhost:4000/gambito-de-dama.jpg"
   },
   {
     "id": "2",
     "title": "Friends",
     "gender": "Comedia",
-    "image": "//beta.adalab.es/curso-intensivo-fullstack-recursos/apis/netflix-v1/images/friends.jpg"
+    "image": "//localhost:4000/friends.jpg"
   }
 ]

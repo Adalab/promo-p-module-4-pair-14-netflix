@@ -1,6 +1,6 @@
-const express = require('express');
-const cors = require('cors');
-const allMovies = require('./assets/allMovies.json');
+const express = require("express");
+const cors = require("cors");
+const allMovies = require("./assets/allMovies.json");
 
 // create and config server
 const server = express();
@@ -13,11 +13,11 @@ server.listen(serverPort, () => {
   console.log(`Server listening at http://localhost:${serverPort}`);
 });
 
-server.get('/movies', (req, res) => {
-  const genderFilterParams = req.query['gender'];
+server.get("/movies", (req, res) => {
+  const genderFilterParams = req.query["gender"];
   let filteredMovies = [...allMovies];
 
-  if (genderFilterParams !== '') {
+  if (genderFilterParams !== "") {
     filteredMovies = allMovies.filter(
       (movie) => movie.gender === genderFilterParams
     );
@@ -30,10 +30,15 @@ server.get('/movies', (req, res) => {
   res.json(response);
 });
 
+server.get("/movie/:movieId", (req, res) => {
+  const id = allMovies.find((movie) => movie.id === req.params.movieId);
+  return console.log(id);
+});
+
 //static server
 
-const staticServerPathAdmin = './src/public-react';
+const staticServerPathAdmin = "./src/public-react";
 server.use(express.static(staticServerPathAdmin));
 
-//const staticServerPathAdmin2 = './src/public-movies-images';
-//server.use(express.static(staticServerPathAdmin2));
+const staticServerPathAdmin2 = "./src/public-movies-images";
+server.use(express.static(staticServerPathAdmin2));

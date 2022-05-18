@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../src/public-styles/main.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <ul class="cards">
+      <li class="card">
+        <img
+          class="card__img"
+          src="<%= image %>"
+          alt="Carátula de Gambito de dama"
+        />
+        <h3 class="card__title"><%= title %></h3>
+        <p class="card__description">Género: <%= gender %></p>
+      </li>
+      <li class="card">
+        <img
+          class="card__img"
+          src="//localhost:4000/friends.jpg"
+          alt="Carátula de Friends"
+        />
+        <h3 class="card__title">Friends</h3>
+        <p class="card__description">Género: Comedia</p>
+      </li>
+    </ul>
+  </body>
+</html>

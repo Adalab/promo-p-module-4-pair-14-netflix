@@ -6,6 +6,7 @@ const allMovies = require("./assets/allMovies.json");
 const server = express();
 server.use(cors());
 server.use(express.json());
+server.set("view engine", "ejs");
 
 // init express aplication
 const serverPort = 4000;
@@ -31,8 +32,8 @@ server.get("/movies", (req, res) => {
 });
 
 server.get("/movie/:movieId", (req, res) => {
-  const id = allMovies.find((movie) => movie.id === req.params.movieId);
-  return console.log(id);
+  const foundMovie = allMovies.find((movie) => movie.id === req.params.movieId);
+  res.render("movie", foundMovie);
 });
 
 //static server
@@ -42,3 +43,6 @@ server.use(express.static(staticServerPathAdmin));
 
 const staticServerPathAdmin2 = "./src/public-movies-images";
 server.use(express.static(staticServerPathAdmin2));
+
+const staticServerPathAdminStyles = "./src/public-styles";
+server.use(express.static(staticServerPathAdminStyles));

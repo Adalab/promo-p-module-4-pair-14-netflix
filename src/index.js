@@ -21,7 +21,6 @@ server.listen(serverPort, () => {
 server.get("/movies", (req, res) => {
   const query = db.prepare("SELECT id,title,gender,image FROM movies");
   const dataMovies = query.all();
-  console.log(dataMovies);
 
   const response = {
     success: true,
@@ -36,22 +35,19 @@ server.get("/movie/:movieId", (req, res) => {
     "SELECT id,title,gender,image FROM movies where id = ?"
   );
   const foundMovie = query.get(req.params.movieId);
-  console.log(foundMovie);
+
   res.render("movie", foundMovie);
 });
 
 //users endpoint
 server.post("/login", (req, res) => {
-  let exist = users.find((user) => {
-    if (user.email === req.body.email && user.password === req.body.password) {
-      return user;
-    }
-    console.log(user.email);
-    console.log(user.password);
-    return null;
-  });
+  const query = db.prepare(
+    "SELECT id,email,password,name FROM users where users.email = ?"
+  );
+  console.log(foundUser);
+  const foundUser = query.get(req.body.email);
 
-  if (!exist) {
+  if (!foundUser) {
     return res.status(404).json({
       success: false,
       errorMessage: "Usuaria/o no encontrada/o",
@@ -59,7 +55,7 @@ server.post("/login", (req, res) => {
   }
   return res.status(200).json({
     success: true,
-    userId: exist.id,
+    userId: foundUser.id,
   });
 });
 

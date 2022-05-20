@@ -1,13 +1,14 @@
-const express = require('express');
-const cors = require('cors');
-const allMovies = require('./assets/allMovies.json');
-const users = require('./data/users.json');
+const express = require("express");
+const cors = require("cors");
+const allMovies = require("./assets/allMovies.json");
+const users = require("./data/users.json");
+const Database = require("better-sqlite3");
 
 // create and config server
 const server = express();
 server.use(cors());
 server.use(express.json());
-server.set('view engine', 'ejs');
+server.set("view engine", "ejs");
 
 // init express aplication
 const serverPort = 4000;
@@ -17,31 +18,30 @@ server.listen(serverPort, () => {
 //--------endpoints
 
 //filter movies endpoint
-server.get('/movies', (req, res) => {
-  const genderFilterParams = req.query['gender'];
-  let filteredMovies = [...allMovies];
-
-  if (genderFilterParams !== '') {
-    filteredMovies = allMovies.filter(
-      (movie) => movie.gender === genderFilterParams
-    );
-  }
+server.get("/movies", (req, res) => {
+  const query = db.prepare("SELECT id,title,gender,image FROM movies");
+  const dataMovies = query.all();
+  console.log(dataMovies);
 
   const response = {
     success: true,
-    movies: filteredMovies,
+    movies: dataMovies,
   };
   res.json(response);
 });
 
 //get movies id endpoint
-server.get('/movie/:movieId', (req, res) => {
-  const foundMovie = allMovies.find((movie) => movie.id === req.params.movieId);
-  res.render('movie', foundMovie);
+server.get("/movie/:movieId", (req, res) => {
+  const query = db.prepare(
+    "SELECT id,title,gender,image FROM movies where id = ?"
+  );
+  const foundMovie = query.get(req.params.movieId);
+  console.log(foundMovie);
+  res.render("movie", foundMovie);
 });
 
 //users endpoint
-server.post('/login', (req, res) => {
+server.post("/login", (req, res) => {
   let exist = users.find((user) => {
     if (user.email === req.body.email && user.password === req.body.password) {
       return user;
@@ -54,7 +54,7 @@ server.post('/login', (req, res) => {
   if (!exist) {
     return res.status(404).json({
       success: false,
-      errorMessage: 'Usuaria/o no encontrada/o',
+      errorMessage: "Usuaria/o no encontrada/o",
     });
   }
   return res.status(200).json({
@@ -65,11 +65,17 @@ server.post('/login', (req, res) => {
 
 //static server
 
-const staticServerPathAdmin = './src/public-react';
+const staticServerPathAdmin = "./src/public-react";
 server.use(express.static(staticServerPathAdmin));
 
-const staticServerPathAdmin2 = './src/public-movies-images';
+const staticServerPathAdmin2 = "./src/public-movies-images";
 server.use(express.static(staticServerPathAdmin2));
 
-const staticServerPathAdminStyles = './src/publicStyles';
+const staticServerPathAdminStyles = "./src/publicStyles";
 server.use(express.static(staticServerPathAdminStyles));
+
+//dataBase
+
+const db = new Database("./src/db/movies.db", {
+  verbose: console.log,
+});

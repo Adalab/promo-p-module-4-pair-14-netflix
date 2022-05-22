@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Route, Switch } from "react-router-dom";
 // components
-import Header from './Header';
-import AllMovies from './AllMovies';
-import MyMovies from './MyMovies';
-import Login from './Login';
-import Profile from './Profile';
-import SignUp from './SignUp';
+import Header from "./Header";
+import AllMovies from "./AllMovies";
+import MyMovies from "./MyMovies";
+import Login from "./Login";
+import Profile from "./Profile";
+import SignUp from "./SignUp";
 // services
-import apiMovies from '../services/api-movies';
-import apiUser from '../services/api-user';
-import router from '../services/router';
+import apiMovies from "../services/api-movies";
+import apiUser from "../services/api-user";
+import router from "../services/router";
 
 const App = () => {
   // state: user
-  const [userId, setUserId] = useState('');
-  const [userName, setUserName] = useState('');
-  const [userEmail, setUserEmail] = useState('');
-  const [userPassword, setUserPassword] = useState('');
+  const [userId, setUserId] = useState("");
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
   const [userMovies, setUserMovies] = useState([]);
   // state: login
-  const [loginErrorMessage, setLoginErrorMessage] = useState('');
+  const [loginErrorMessage, setLoginErrorMessage] = useState("");
   // state: sign up
-  const [signUpErrorMessage, setSignUpErrorMessage] = useState('');
+  const [signUpErrorMessage, setSignUpErrorMessage] = useState("");
   // state: movies
   const [appMovies, setAppMovies] = useState([]);
-  const [allMoviesOptionGender, setAllMoviesOptionGender] = useState('');
-  const [allMoviesOptionSort, setAllMoviesOptionSort] = useState('asc');
+  const [allMoviesOptionGender, setAllMoviesOptionGender] = useState("");
+  const [allMoviesOptionSort, setAllMoviesOptionSort] = useState("asc");
 
   /*
   useEffect: obtener las películas del API.
@@ -49,7 +49,7 @@ const App = () => {
   Como queremos que el back devuelva los datos de una usuaria getProfileFromApi recibe el userId.
   */
   useEffect(() => {
-    if (userId !== '') {
+    if (userId !== "") {
       apiUser.getProfileFromApi(userId).then((response) => {
         setUserName(response.name);
         setUserEmail(response.email);
@@ -64,7 +64,7 @@ const App = () => {
   Como queremos que el back devuelva las películas de una usuaria getUserMoviesFromApi recibe el userId.
   */
   useEffect(() => {
-    if (userId !== '') {
+    if (userId !== "") {
       apiUser.getUserMoviesFromApi(userId).then((response) => {
         setUserMovies(response.movies);
       });
@@ -78,13 +78,14 @@ const App = () => {
   */
   const sendLoginToApi = (loginData) => {
     // Limpiamos el error antes de enviar los datos al API
-    setLoginErrorMessage('');
+    setLoginErrorMessage("");
+
     // Enviamos los datos al API
     apiUser.sendLoginToApi(loginData).then((response) => {
       if (response.success === true) {
         setUserId(response.userId);
         // Si la usuaria introduce bien sus datos redireccionamos desde la página de login al inicio de la página
-        router.redirect('/');
+        router.redirect("/");
       } else {
         // Si la usuaria introduce mal sus datos guardamos el error que nos devuelve el API para que se pinte en la página
         setLoginErrorMessage(response.errorMessage);
@@ -99,13 +100,13 @@ const App = () => {
   */
   const sendSingUpToApi = (data) => {
     // Limpiamos el error antes de enviar los datos al API
-    setSignUpErrorMessage('');
+    setSignUpErrorMessage("");
     // Enviamos los datos al API
     apiUser.sendSingUpToApi(data).then((response) => {
       if (response.success === true) {
         setUserId(response.userId);
         // Si la usuaria introduce bien sus datos redireccionamos desde la página de signup al inicio de la página
-        router.redirect('/');
+        router.redirect("/");
       } else {
         // Si la usuaria introduce mal sus datos guardamos el error que nos devuelve el API para que se pinte en la página
         setSignUpErrorMessage(response.errorMessage);
@@ -136,7 +137,7 @@ const App = () => {
   Recargamos la página para que se borren todos los datos del estado de React.
   */
   const logout = () => {
-    router.redirect('/');
+    router.redirect("/");
     router.reload();
   };
 
@@ -146,9 +147,9 @@ const App = () => {
   En el primer useEffect le decimos que cuando estos datos cambien vuelva a pedir las películas al API.
   */
   const handleAllMoviesOptions = (data) => {
-    if (data.key === 'gender') {
+    if (data.key === "gender") {
       setAllMoviesOptionGender(data.value);
-    } else if (data.key === 'sort') {
+    } else if (data.key === "sort") {
       setAllMoviesOptionSort(data.value);
     }
   };
@@ -162,7 +163,7 @@ const App = () => {
       De esta forma Header maneja datos más simples y solo los que necesita. Queremos que Header sea lo más simple posible. */}
       <Header isUserLogged={!!userId} logout={logout} />
       <Switch>
-        <Route exact path="/">
+        <Route exact path='/'>
           <AllMovies
             movies={appMovies}
             allMoviesOptionGender={allMoviesOptionGender}
@@ -170,22 +171,22 @@ const App = () => {
             handleAllMoviesOptions={handleAllMoviesOptions}
           />
         </Route>
-        <Route path="/my-movies">
+        <Route path='/my-movies'>
           <MyMovies movies={userMovies} />
         </Route>
-        <Route path="/login">
+        <Route path='/login'>
           <Login
             loginErrorMessage={loginErrorMessage}
             sendLoginToApi={sendLoginToApi}
           />
         </Route>
-        <Route path="/signup">
+        <Route path='/signup'>
           <SignUp
             signUpErrorMessage={signUpErrorMessage}
             sendSingUpToApi={sendSingUpToApi}
           />
         </Route>
-        <Route path="/profile">
+        <Route path='/profile'>
           <Profile
             userName={userName}
             userEmail={userEmail}

@@ -1,14 +1,14 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
 // const allMovies = require('./assets/allMovies.json');
 // const users = require('./data/users.json');
-const Database = require('better-sqlite3');
+const Database = require("better-sqlite3");
 
 // create and config server
 const server = express();
 server.use(cors());
 server.use(express.json());
-server.set('view engine', 'ejs');
+server.set("view engine", "ejs");
 
 // init express aplication
 const serverPort = 4000;
@@ -20,8 +20,8 @@ server.listen(serverPort, () => {
 const baseImagePath = `http://localhost:${serverPort}/`;
 
 //filter movies endpoint
-server.get('/movies', (req, res) => {
-  const query = db.prepare('SELECT id,title,gender,image FROM movies');
+server.get("/movies", (req, res) => {
+  const query = db.prepare("SELECT id,title,gender,image FROM movies");
   const dataMovies = query.all();
 
   const response = {
@@ -32,9 +32,9 @@ server.get('/movies', (req, res) => {
 });
 
 //get movies id endpoint
-server.get('/movie/:movieId', (req, res) => {
+server.get("/movie/:movieId", (req, res) => {
   const query = db.prepare(
-    'SELECT id,title,gender,image FROM movies where id = ?'
+    "SELECT id,title,gender,image FROM movies where id = ?"
   );
   let foundMovie = query.get(req.params.movieId);
   //foundMovie.image = baseImagePath + foundMovie.image;
@@ -44,31 +44,34 @@ server.get('/movie/:movieId', (req, res) => {
     foundMovie: foundMovie,
   };
 
-  res.render('movie', response);
+  res.render("movie", response);
 });
 
 //users endpoint
-server.post('/login', (req, res) => {
+server.post("/login", (req, res) => {
   const query = db.prepare(
-    'SELECT id,email,password,name FROM users where users.email = ?'
+    "SELECT id,email,password,name FROM users where users.email = ?"
   );
-  console.log(foundUser);
+
   const foundUser = query.get(req.body.email);
 
-  if (!foundUser) {
+  console.log(foundUser.id);
+
+  if (foundUser === undefined) {
     return res.status(404).json({
       success: false,
-      errorMessage: 'Usuaria/o no encontrada/o',
+      errorMessage: "Usuaria/o no encontrada/o",
+    });
+  } else {
+    return res.status(200).json({
+      success: true,
+      userId: foundUser.id,
     });
   }
-  return res.status(200).json({
-    success: true,
-    userId: foundUser.id,
-  });
 });
 
 //users singup
-server.post('/sign-up', (req, res) => {
+server.post("/sign-up", (req, res) => {
   const userSignUpInsert = db.prepare(
     `SELECT * FROM users WHERE email = ? AND password = ? AND name = ?`
   );
@@ -80,7 +83,7 @@ server.post('/sign-up', (req, res) => {
 
   if (foundUser === undefined) {
     const userSignUpInsert = db.prepare(
-      'INSERT INTO users (email, password, name) VALUES (?, ?, ?)'
+      "INSERT INTO users (email, password, name) VALUES (?, ?, ?)"
     );
     const userSignUp = userSignUpInsert.run(
       req.body.email,
@@ -95,55 +98,24 @@ server.post('/sign-up', (req, res) => {
   } else {
     res.json({
       success: false,
-      errorMessage: 'Usuaria/o ya existente',
+      errorMessage: "Usuaria/o ya existente",
     });
   }
 });
 
-//--
-
-// // Registro de nuevas usuarias en el back
-// server.post("/sign-up", (req, res) => {
-//   // body params
-//   const emailSignUpParam = req.body.email;
-//   const passwordSignUpParam = req.body.password;
-
-//   const userSignUpInsert = db.prepare(
-//     `SELECT * FROM users WHERE email = ? AND password = ?`
-//   );
-//   const foundUser = userSignUpInsert.get(emailSignUpParam, passwordSignUpParam);
-
-//   if (foundUser === undefined) {
-//     const query = db.prepare(
-//       "INSERT INTO users (email, password) VALUES (?, ?)"
-//     );
-//     const userSignUp = query.run(emailSignUpParam, passwordSignUpParam);
-
-//     res.json({
-//       success: true,
-//       userId: userSignUp.lastInsertRowid,
-//     });
-//   } else {
-//     res.json({
-//       success: false,
-//       errorMessage: "Usuaria/o ya existente",
-//     });
-//   }
-// });
-
 //static server
 
-const staticServerPathAdmin = './src/public-react';
+const staticServerPathAdmin = "./src/public-react";
 server.use(express.static(staticServerPathAdmin));
 
-const staticServerPathAdmin2 = './src/public-movies-images';
+const staticServerPathAdmin2 = "./src/public-movies-images";
 server.use(express.static(staticServerPathAdmin2));
 
-const staticServerPathAdminStyles = './src/publicStyles';
+const staticServerPathAdminStyles = "./src/publicStyles";
 server.use(express.static(staticServerPathAdminStyles));
 
 //dataBase
 
-const db = new Database('./src/db/database.db', {
+const db = new Database("./src/db/database.db", {
   verbose: console.log,
 });

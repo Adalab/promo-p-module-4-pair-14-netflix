@@ -12,12 +12,12 @@
       <li class="card">
         <img
           class="card__img"
-          src="<%= image %>"
+          src="<%=baseImagePath %><%= foundMovie.image %>"
           alt="Carátula de
         Gambito de dama"
         />
-        <h3 class="card__title"><%= title %></h3>
-        <p class="card__description">Género: <%= gender %></p>
+        <h3 class="card__title"><%= foundMovie.title %></h3>
+        <p class="card__description">Género: <%= foundMovie.gender %></p>
       </li>
     </ul>
   </body>

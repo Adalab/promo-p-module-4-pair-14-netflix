@@ -17,6 +17,8 @@ server.listen(serverPort, () => {
 });
 //--------endpoints
 
+const baseImagePath = `http://localhost:${serverPort}/`;
+
 //filter movies endpoint
 server.get('/movies', (req, res) => {
   const query = db.prepare('SELECT id,title,gender,image FROM movies');
@@ -34,9 +36,15 @@ server.get('/movie/:movieId', (req, res) => {
   const query = db.prepare(
     'SELECT id,title,gender,image FROM movies where id = ?'
   );
-  const foundMovie = query.get(req.params.movieId);
+  let foundMovie = query.get(req.params.movieId);
+  //foundMovie.image = baseImagePath + foundMovie.image;
 
-  res.render('movie', foundMovie);
+  const response = {
+    baseImagePath: baseImagePath,
+    foundMovie: foundMovie,
+  };
+
+  res.render('movie', response);
 });
 
 //users endpoint

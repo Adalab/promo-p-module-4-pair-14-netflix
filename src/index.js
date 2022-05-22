@@ -69,25 +69,67 @@ server.post('/login', (req, res) => {
 
 //users singup
 server.post('/sign-up', (req, res) => {
-  const query = db.prepare(
-    "INSERT INTO users (email, password,name) VALUES ('some2@email.com','somepass2','test22')"
+  const userSignUpInsert = db.prepare(
+    `SELECT * FROM users WHERE email = ? AND password = ? AND name = ?`
   );
-  console.log(query);
-  const result = query.run(req.body.email, req.body.password);
-  console.log(result);
-  res.json(result);
+  const foundUser = userSignUpInsert.get(
+    req.body.email,
+    req.body.password,
+    req.body.name
+  );
 
-  if (!result) {
-    return res.status(404).json({
+  if (foundUser === undefined) {
+    const userSignUpInsert = db.prepare(
+      'INSERT INTO users (email, password, name) VALUES (?, ?, ?)'
+    );
+    const userSignUp = userSignUpInsert.run(
+      req.body.email,
+      req.body.password,
+      req.body.name
+    );
+
+    res.json({
+      success: true,
+      userId: userSignUp.lastInsertRowid,
+    });
+  } else {
+    res.json({
       success: false,
-      errorMessage: 'Usuaria/o no encontrada/o',
+      errorMessage: 'Usuaria/o ya existente',
     });
   }
-  return res.status(200).json({
-    success: true,
-    userId: result.id,
-  });
 });
+
+//--
+
+// // Registro de nuevas usuarias en el back
+// server.post("/sign-up", (req, res) => {
+//   // body params
+//   const emailSignUpParam = req.body.email;
+//   const passwordSignUpParam = req.body.password;
+
+//   const userSignUpInsert = db.prepare(
+//     `SELECT * FROM users WHERE email = ? AND password = ?`
+//   );
+//   const foundUser = userSignUpInsert.get(emailSignUpParam, passwordSignUpParam);
+
+//   if (foundUser === undefined) {
+//     const query = db.prepare(
+//       "INSERT INTO users (email, password) VALUES (?, ?)"
+//     );
+//     const userSignUp = query.run(emailSignUpParam, passwordSignUpParam);
+
+//     res.json({
+//       success: true,
+//       userId: userSignUp.lastInsertRowid,
+//     });
+//   } else {
+//     res.json({
+//       success: false,
+//       errorMessage: "Usuaria/o ya existente",
+//     });
+//   }
+// });
 
 //static server
 

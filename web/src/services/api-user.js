@@ -32,6 +32,7 @@ const sendSingUpToApi = (data) => {
     body: JSON.stringify({
       email: data.email,
       password: data.password,
+      name: data.name,
     }),
     headers: {
       'Content-Type': 'application/json',

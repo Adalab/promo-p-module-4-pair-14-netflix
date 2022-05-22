@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const allMovies = require('./assets/allMovies.json');
-const users = require('./data/users.json');
+// const allMovies = require('./assets/allMovies.json');
+// const users = require('./data/users.json');
 const Database = require('better-sqlite3');
 
 // create and config server
@@ -64,6 +64,28 @@ server.post('/login', (req, res) => {
   return res.status(200).json({
     success: true,
     userId: foundUser.id,
+  });
+});
+
+//users singup
+server.post('/sign-up', (req, res) => {
+  const query = db.prepare(
+    "INSERT INTO users (email, password,name) VALUES ('some2@email.com','somepass2','test22')"
+  );
+  console.log(query);
+  const result = query.run(req.body.email, req.body.password);
+  console.log(result);
+  res.json(result);
+
+  if (!result) {
+    return res.status(404).json({
+      success: false,
+      errorMessage: 'Usuaria/o no encontrada/o',
+    });
+  }
+  return res.status(200).json({
+    success: true,
+    userId: result.id,
   });
 });
 
